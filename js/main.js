@@ -5,6 +5,16 @@
     
     document.addEventListener('DOMContentLoaded', function(){
         
+        var map = L.map('map').setView([20.674781, -103.38749], 17);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        L.marker([20.674781, -103.38749]).addTo(map)
+            .bindPopup('GDLWebCamp 2018<br> Boletos ya disponibles')
+            .openPopup();
+        
         // Campos datos usuarios
         var nombre = document.querySelector("#nombre");
         var apellido = document.querySelector("#apellido");
@@ -19,12 +29,51 @@
         var calcular = document.querySelector("#calcular");
         var errorDiv = document.querySelector("#error");
         var botonRegistro = document.querySelector("#btnRegistro");
-        var resultado = document.querySelector("#lista-productos");
+        var lista_productos = document.querySelector("#lista-productos");
+        var suma = document.querySelector("#suma-total");
+        
+        
+        // Extras
+        
+        var camisas = document.querySelector("#camisa_evento");
+        var etiquetas = document.querySelector("#etiquetas");
         
         
         
         calcular.addEventListener('click', calcularMontos);
         
+        pase_dia.addEventListener('blur', mostrarDias);
+        pase_dosdias.addEventListener('blur', mostrarDias);
+        pase_completo.addEventListener('blur', mostrarDias);
+        
+        nombre.addEventListener('blur', validarCampos);
+        apellido.addEventListener('blur', validarCampos);
+        email.addEventListener('blur', validarCampos);
+        email.addEventListener('blur', validarMail);
+        
+        function validarCampos () {
+            if(this.value == '') {
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = "este campo es obligatorio";
+                this.style.border = '1px solid red';
+                errorDiv.style.border = '1px solid red';
+            } else {
+                errorDiv.style.display = 'none';
+                this.style.border = '1px solid #cccccc';
+            }
+        }
+        
+        function validarMail() {
+            if(this.value.indexOf("@") > -1) {
+                errorDiv.style.display = 'none';
+                this.style.border = '1px solid #cccccc';
+            } else {
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = "debe tener al menos una @";
+                this.style.border = '1px solid red';
+                errorDiv.style.border = '1px solid red';
+            }
+        }
         
         
         
@@ -35,15 +84,66 @@
                 alert("Debes elegir un regalo");
                 regalo.focus();
             } else {
-                var boletosDia = pase_dia.value,
-                    boletos2Dias = pase_dosdias.value,
-                    boletoCompleto = pase_completo.value;
+                var boletosDia = parseInt(pase_dia.value, 10) || 0,
+                    boletos2Dias = parseInt(pase_dosdias.value, 10) || 0,
+                    boletoCompleto = parseInt(pase_completo.value, 10) || 0,
+                    cantCamisas = parseInt(camisas.value, 10) || 0,
+                    cantEtiquetas = parseInt(etiquetas.value, 10) || 0;
                 
-                var totalPagar = (boletosDia * 30) + (boletos2Dias * 45) + (boletoCompleto * 50);
+                var totalPagar = (boletosDia * 30) + (boletos2Dias * 45) + (boletoCompleto * 50) + (cantCamisas * 10 * 0.93) + (cantEtiquetas * 2);
                 
-                console.log(totalPagar);
+                var listadoProductos = [];
                 
+                if(boletosDia >=1) {
+                    listadoProductos.push(boletosDia + ' Pases por día');
+                }
+                
+                if(boletos2Dias >=1) {
+                    listadoProductos.push(boletos2Dias + ' Pases por 2 días');
+                }
+                if(boletoCompleto >=1) {
+                    listadoProductos.push(boletoCompleto + ' Pases completos');
+                }
+                if(cantCamisas >=1) {
+                    listadoProductos.push(cantCamisas + ' Camisas');
+                }
+                if(cantEtiquetas >=1) {
+                    listadoProductos.push(cantEtiquetas + ' Etiquetas');
+                }
+                
+                var resultado = '';
+                
+                lista_productos.style.display="block";
+                for(var i = 0; i<listadoProductos.length; i++) {
+                    lista_productos.innerHTML += listadoProductos[i] + '<br/>';
+                }
+                
+                suma.innerHTML = "$ " + totalPagar.toFixed(2);
             }
+        }
+        
+        function mostrarDias() {
+            var boletosDia = parseInt(pase_dia.value, 10) || 0,
+                boletos2Dias = parseInt(pase_dosdias.value, 10) || 0,
+                boletoCompleto = parseInt(pase_completo.value, 10) || 0;
+            
+            var diasElegidos = [] ;
+            
+            if(boletosDia > 0) {
+                diasElegidos.push('viernes');
+            }
+            if(boletos2Dias > 0) {
+                diasElegidos.push('viernes','sabado');
+            }
+            if(boletoCompleto > 0) {
+                diasElegidos.push('viernes','sabado','domingo');
+            }
+            
+            
+            for(var i=0; i<diasElegidos.length; i++) {
+                document.getElementById(diasElegidos[i]).style.display = 'block';
+            }
+            
         }
         
         
