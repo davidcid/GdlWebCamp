@@ -1,9 +1,9 @@
-(function() {
+(function () {
     "use strict";
     
     var regalo = document.querySelector("#regalo");
     
-    document.addEventListener('DOMContentLoaded', function(){
+    document.addEventListener('DOMContentLoaded', function () {
         
         var map = L.map('map').setView([20.674781, -103.38749], 17);
         
@@ -38,6 +38,7 @@
         var camisas = document.querySelector("#camisa_evento");
         var etiquetas = document.querySelector("#etiquetas");
         
+
         
         
         calcular.addEventListener('click', calcularMontos);
@@ -51,6 +52,7 @@
         email.addEventListener('blur', validarCampos);
         email.addEventListener('blur', validarMail);
         
+                
         function validarCampos () {
             if(this.value == '') {
                 errorDiv.style.display = 'block';
@@ -74,10 +76,7 @@
                 errorDiv.style.border = '1px solid red';
             }
         }
-        
-        
-        
-        
+            
         function calcularMontos(event){
             event.preventDefault();
             if(regalo.value === '') {
@@ -148,9 +147,38 @@
         
         
         
-        
-        
-        
-        
     }); // DOM CONTENT LOADED
 })();
+
+$(function() {
+    
+    // Programa de Conferencias
+    $('.programa-evento .info-curso:first').show();
+    $('.menu-programa a:first').addClass('activo');
+    
+    $('.menu-programa a').on('click', function() {
+        $('.menu-programa a').removeClass('activo');
+        $(this).addClass('activo');
+        $('.ocultar').hide();
+        var enlace = $(this).attr('href');
+        $(enlace).fadeIn(1000);
+        return false;
+    });
+    
+    // Anmiaciones para los números
+    $('.resumen-evento li:nth-child(1) p').animateNumber({number: 6}, 1200);
+    $('.resumen-evento li:nth-child(2) p').animateNumber({number: 15}, 1200);
+    $('.resumen-evento li:nth-child(3) p').animateNumber({number: 3}, 1500);
+    $('.resumen-evento li:nth-child(4) p').animateNumber({number: 9}, 1500);
+    
+    // Cuenta regresiva
+    $('.cuenta-regresiva').countdown('2019/01/20 09:00:00', function(event) {
+        $('#dias').html(event.strftime('%D'));
+        $('#horas').html(event.strftime('%H'));
+        $('#minutos').html(event.strftime('%M'));
+        $('#segundos').html(event.strftime('%S'));
+    });
+  
+});
+
+
